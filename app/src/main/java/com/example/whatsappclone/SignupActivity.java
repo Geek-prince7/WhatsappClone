@@ -3,6 +3,8 @@ package com.example.whatsappclone;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
@@ -20,9 +22,20 @@ public class SignupActivity extends AppCompatActivity {
     ActivitySignupBinding binding;
     private FirebaseAuth mAuth;
     FirebaseDatabase database;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //custom progress dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
+        builder.setCancelable(false); // if you want user to wait for some process to finish,
+        builder.setView(R.layout.dialog_loading);
+        AlertDialog dialog = builder.create();
+
+
+
+
+
         binding=ActivitySignupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getSupportActionBar().hide();
@@ -31,11 +44,16 @@ public class SignupActivity extends AppCompatActivity {
         binding.btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                dialog.show();
+
                 mAuth.createUserWithEmailAndPassword(
                         binding.emailUp.getText().toString(),binding.passwordUp.getText().toString())
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        dialog.dismiss();
                         if(task.isSuccessful())
                         {
                             Users user=new Users(binding.username.getText().toString(),
